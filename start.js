@@ -7,7 +7,7 @@ const fsPromises = fs.promises;
 const app = {};
 
 app.options = {
-  path: './',
+  path: './txt/example',
 };
 async function getFiles() {
   try {
