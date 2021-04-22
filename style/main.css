@@ -1,8 +1,10 @@
 .character {}
-.center {}
+.center {text-align   : center;}
 .commercial {}
 .fb {}
 .MsoBodyText {}
-.scene {}
-.style1 {}
+.scene {text-align   : center;
+    color        : #000099;
+    background   : #dddddd none repeat;}
+.style1 {text-align: center; font-weight: bold; }
 .unseen {}
