@@ -7,6 +7,7 @@ const fsPromises = fs.promises;
 const app = {};
 
 app.options = {
+  dir: './txt',
   path: './txt/example',
 };
 async function getFiles() {
@@ -16,15 +17,16 @@ async function getFiles() {
     return e;
   }
 }
-
-app.start = function start() {
+async function startAsync() {
   // eslint-disable-next-line no-console
-  const fileNames = getFiles().then((value) => value).catch((err) => console.log(err));
-
-  fileNames.forEach((name) => {
-    const lines = readHTMLFile.readFile(name);
+  const fileNames = await getFiles().then((value) => value).catch((err) => console.log(err));
+  fileNames.forEach(async (name) => {
+    const lines = await readHTMLFile.readFile(`${app.optipons.dir}${name}`).catch((err) => console.log(err));
     const oLines = lines.map((line) => parseLine.parseLine(line, app.options));
     createJSONFile.create(oLines);
-  });
+  }).catch((err) => console.log(err));
+}
+app.start = function start() {
+  startAsync().catch((err)=>console.log(err));
 };
 app.start();
