@@ -20,13 +20,20 @@ async function getFiles() {
 async function startAsync() {
   // eslint-disable-next-line no-console
   const fileNames = await getFiles().then((value) => value).catch((err) => console.log(err));
-  fileNames.forEach(async (name) => {
-    const lines = await readHTMLFile.readFile(`${app.optipons.dir}${name}`).catch((err) => console.log(err));
+
+  async function mapForEach(files, create()) {
+    for (let i = 0; i < fileNames.length; i++) {
+      await create(fileNames[i]);
+    }
+  }
+  function create(name) {
+    const lines = readHTMLFile.readFile(`${app.optipons.dir}${name}`).catch((err) => console.log(err));
     const oLines = lines.map((line) => parseLine.parseLine(line, app.options));
     createJSONFile.create(oLines);
-  }).catch((err) => console.log(err));
+  }
+  await mapForEach(fileNames);
 }
 app.start = function start() {
-  startAsync().catch((err)=>console.log(err));
+  startAsync().catch((err) => console.log(err));
 };
 app.start();
