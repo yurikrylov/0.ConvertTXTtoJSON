@@ -6,20 +6,11 @@ const fsPromises = fs.promises;
 const parseLine = require('./lib/parseLine');
 
 const app = {};
-let JSONDB;
-
-const createJSONFile = {};
-
-const addToJSONDB = function create(lines) {
-  const data = JSON.parse(JSONDB);
-  data.push(lines);
-  JSONDB = JSON.stringify(data);
-};
-
 app.options = {
   dir: './txt',
   path: './txt/example',
 };
+let JSON_DB = '';
 
 function getFiles() {
   try {
@@ -34,6 +25,15 @@ async function readFile(pathToFile) {
   const text = await htmlToText(data, { wordwrap: null }).split(/[\r\n]+/);
   return text;
 }
+function addToJSONDB(lines) {
+  const data = JSON.parse(JSON_DB);
+  data.push(lines);
+  JSON_DB = JSON.stringify(data);
+}
+
+function writeFile() {
+  fs.writeFile('/txt/example/db.json', JSON_DB, () => true);
+}
 
 async function wrapper(name) {
   const lines = await readFile(path.resolve(`${app.options.path}`, `${name}`));
@@ -45,14 +45,14 @@ async function wrapper(name) {
 }
 
 async function startAsync() {
-  const newFileName = createJSONFile.create();
   // eslint-disable-next-line no-console
   const fileNames = await getFiles().then((value) => value).catch((err) => console.log(err));
   // eslint-disable-next-line
   for await (const name of fileNames) {
     const oLines = wrapper(name);
-    addToJSONDB(newFileName, oLines);
+    addToJSONDB(oLines);
   }
+  writeFile();
 }
 
 app.start = function start() {
